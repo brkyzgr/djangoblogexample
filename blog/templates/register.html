@@ -1,0 +1,18 @@
+{% extends 'layoutt.html' %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+    <h3>Kayıt Ol</h3>
+    <hr>
+    <form method = "post">  <!-- Bu şekilde formu gösterdik (as_p formun gözükmesi için yazdık)--> 
+        {% csrf_token %} <!-- Bunu ekledik çünkü kullanıcı bilgilerinin çalınmasını önlüyor.-->	
+        {{form|crispy}}
+        <br>
+        <button type = "submit" class = "btn btn-danger">Giriş Yap</button>
+    </form>
+    </div>
+</div>
+{% endblock %}
