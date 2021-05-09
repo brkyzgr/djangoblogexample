@@ -8,13 +8,13 @@ def articles(request):
     keyword = request.GET.get("keyword")
 
     if keyword:
-        articles = Article.objects.filter(title__contains = keyword) # title__contains : Bu sorgu keywordün geçtiği article ları döndürecek.
+        articles = Article.objects.filter(title__contains = keyword) 
         return render(request,"articles.html",{"articles":articles})
-    articles = Article.objects.all() # Bu şekilde bütün makaleleri veri tabanından aldık ve bir objeye atadık(bir sözlük içinde olacak templatelardan erişebilmek için).
+    articles = Article.objects.all() 
     return render(request,"articles.html",{"articles":articles})
 
 
-def index(request): # Http requestte atılınca django bilgileri taşıyan bu değişkeni gönderir. Ve her fonksiyonda bulunması gerekir ve ilk parametre olarak bulunması gerekir.
+def index(request): 
     return render(request,"index.html")
 
 def about(request):
@@ -22,7 +22,7 @@ def about(request):
 
 @login_required(login_url = "user:login")
 def dashboard(request):
-    articles = Article.objects.filter(author= request.user) # Burada sitede girmiş olan kullanıcıların makalelerini gösterir.
+    articles = Article.objects.filter(author= request.user) 
     context = {
         "articles" : articles
     }
@@ -44,7 +44,7 @@ def addarticle(request):
     return render(request,"addarticle.html",{"form":form})
 
 def detail(request,id):
-    # article = Article.objects.filter(id = id).first()  Burada makalenin verisini aldık.
+    
     article = get_object_or_404(Article,id = id)
     
     comments = article.comment.all()
@@ -54,7 +54,7 @@ def detail(request,id):
 @login_required(login_url = "user:login")
 def updateArticle(request,id):
     article = get_object_or_404(Article,id=id)
-    form = ArticleForm(request.POST or None,request.FILES or None,instance=article) # intance içine objeyi gönderirsek bu objedeji tüm bilgiler article fromun içine yazılır.
+    form = ArticleForm(request.POST or None,request.FILES or None,instance=article) 
     if form.is_valid():
         article = form.save(commit=False)
 
@@ -69,21 +69,20 @@ def updateArticle(request,id):
 @login_required(login_url = "user:login")
 def deleteArticle(request,id):
     article = get_object_or_404(Article,id=id)
-    article.delete() # Böyle veri silinir
+    article.delete()
     messages.success(request,"Makale Başarıyla Silindi")
 
     return redirect("article:dashboard")
 
 def addComment(request,id):
-    # İlk önce id ye göre postu alcaz.
+   
     article = get_object_or_404(Article,id = id)
-    # Bu methodun post mu get mi olduğunu kontrol edecez.
+    
     if request.method == "POST":
         comment_author = request.POST.get("comment_author")
         comment_content = request.POST.get("comment_content")
 
-        # Article da alttaki gibi ekleyecez.
-
+       
         newComment = Comment(comment_author = comment_author,comment_content=comment_content)
 
         newComment.article = article
